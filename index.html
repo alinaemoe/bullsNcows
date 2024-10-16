@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulls and Cows Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the game 'Bulls and Cows'!</h1>
+        <p>Your task is to guess a four-digit number with different digits.</p>
+        <input type="text" id="guessInput" placeholder="Enter your guess">
+        <button onclick="checkGuess()">Submit Guess</button>
+        <p id="result"></p>
+        <p id="attempts">Attempts: 0</p>
+    </div>
+
+    <script>
+        let secretNumber = generateSecretNumber();
+        let attempts = 0;
+
+        function generateSecretNumber() {
+            let digits = "0123456789";
+            let secretNumber = "";
+            while (secretNumber.length < 4) {
+                let index = Math.floor(Math.random() * digits.length);
+                let digit = digits[index];
+                if (!secretNumber.includes(digit)) {
+                    secretNumber += digit;
+                }
+            }
+            return secretNumber;
+        }
+
+        function checkGuess() {
+            let guess = document.getElementById("guessInput").value;
+            if (guess.length !== 4 || !guess.split('').every(char => char >= '0' && char <= '9') || new Set(guess).size !== 4) {
+                document.getElementById("result").textContent = "Please enter a four-digit number with different digits.";
+                return;
+            }
+
+            attempts++;
+            let bulls = 0;
+            let cows = 0;
+
+            for (let i = 0; i < 4; i++) {
+                if (guess[i] === secretNumber[i]) {
+                    bulls++;
+                } else if (secretNumber.includes(guess[i])) {
+                    cows++;
+                }
+            }
+
+            document.getElementById("result").textContent = `Bulls: ${bulls}, Cows: ${cows}`;
+            document.getElementById("attempts").textContent = `Attempts: ${attempts}`;
+
+            if (bulls === 4) {
+                document.getElementById("result").textContent = `Congrats! You guessed ${secretNumber} after ${attempts} attempts.`;
+                document.getElementById("guessInput").disabled = true;
+                document.querySelector("button").disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>
